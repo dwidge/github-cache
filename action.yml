@@ -1,0 +1,30 @@
+name: "Cache"
+description: "Restore a cache, or run a command and save a cache"
+inputs:
+  path:
+    required: true
+    type: string
+  key:
+    required: true
+    type: string
+  run:
+    required: false
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - id: cache
+      uses: actions/cache/restore@v3
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+
+    - if: steps.cache.outputs.cache-hit != 'true' && !!inputs.run
+      run: ${{ inputs.run }}
+      shell: bash
+
+    - if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
