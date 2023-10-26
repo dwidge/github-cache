@@ -21,6 +21,7 @@ runs:
 
     - if: steps.cache.outputs.cache-hit != 'true' && !!inputs.run
       run: ${{ inputs.run }}
+      shell: bash
 
     - if: steps.cache.outputs.cache-hit != 'true'
       uses: actions/cache/save@v3
